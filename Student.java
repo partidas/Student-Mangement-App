@@ -7,111 +7,152 @@ public class Student {
     private int yearLevel;
     private int expectedGradYear;
     private int studentID;
-    private String[] courses = new String[5];
-    private static int courseCost = 100;
-    private static int id = 0;
     private int tuitionBalance = 0;
-    private Calendar cal = Calendar.getInstance();
+    private String[] studentsCourses = new String[6];
+
+    //private static int[] classSize = new int[]{30,0,0,0,0,0};
+    //private static final int classLimit = 30;
+    private static final int courseCost = 100;
+    private static final Calendar cal = Calendar.getInstance();
+    private static int[] studentYearCount = new int[]{0,0,0,0,0};
 
     // Constructor to ask user for student name / year.
-    public Student() {
-        Scanner input = new Scanner(System.in);
+    public Student(Scanner input) {
+        //Scanner input = new Scanner(System.in);
         System.out.print("Enter Student's First Name: ");
-        firstName = input.nextLine();
+        firstName = input.next();
 
         System.out.print("Enter Student's Last Name: ");
-        lastName = input.nextLine();
+        lastName = input.next();
 
         System.out.print("1 - Freshman\n2 - Sophomore\n3 - Junior\n4 - Senior\n5 - Super Senior\n");
         System.out.print("Enter Student's Year Level: ");
+        
         yearLevel = input.nextInt();
         while( (0 > yearLevel) && (yearLevel > 5)) {
             System.out.print("Enter a number between 1-5:");
             yearLevel = input.nextInt();
             break;
         }
+        
+        studentYearCount[yearLevel-1]++;
         expectedGradYear = 5 - yearLevel + cal.get(Calendar.YEAR);
-
         setStudentID();
-        System.out.println("Student entered: \n" + firstName + " " + lastName + "\nYear : " + yearLevel 
-                        + "\nExpected Graduation : " + expectedGradYear + "\nStudent ID : " + studentID
-                        + "\nStudent Account Balance : " + tuitionBalance);
     }
 
     // Generate Student 5-digit unique ID w/ first number being the year started.
     private void setStudentID() {
-        id++;
-        this.studentID = (yearLevel * 10000) + id;
+        studentID = (yearLevel * 10000) + studentYearCount[yearLevel - 1];
     }
+    
     // Enroll in courses
-    public void enroll() {
-        Scanner input = new Scanner(System.in);
+    public void enroll(Scanner input) {
         int i = 0;
-        String course;
-        while(i < 5) {
-            System.out.println("Which classes do you wish to enroll in? (Q to quit)");
-            System.out.println("History 95\nMath 20a\nPhysics 2a\nChemistry 6a\nComputer Science 12\n");
-            course = input.nextLine();
-            if(course.equals("Q")) {                        
-                System.out.println("Successfully Enrolled in " + (i) + " courses!");
-                break;
-            }
-            courses[i] = course;
-            System.out.println("\nAdded - " + courses[i]);
-            this.tuitionBalance += courseCost;
-            System.out.println("Tuition Balance is : " + tuitionBalance + "\n");
-            i++;
+        String course = input.nextLine();
 
+        /*  FOR FUTURE, maybe use a string list to add courses instead of switch case with a catch exception for anything 
+            other than a value.
+        */
+        System.out.println("Available Courses to Enroll:\n1 - History 101\n2 - Math 20A\n3 - Physics 2A\n4 - Computer Science 12\n5 - Humanities 5\n6 - Chemistry 6A");
+        while(i < studentsCourses.length) {        
+            System.out.println("Enter Y to view courses again, else type in course number, or Q to Quit.");
+            course = input.nextLine();   
+
+            //use switch case
+            switch(course) {
+                case "Y":         
+                    System.out.println("Available Courses to Enroll:\n1 - History 101\n2 - Math 20A\n3 - Physics 2A\n4 - Computer Science 12\n5 - Humanities 5\n6 - Chemistry 6A");
+                    break;
+                case "Q":
+                    System.out.println("Successfully Enrolled in " + (i) + " courses!");
+                    i = studentsCourses.length;
+                    break;
+                case "1":
+                    addCourse(i, "History 101");
+                    i++;
+                    break;
+                case "2":
+                    addCourse(i, "Math20A");
+                    i++;
+                    break;
+                case "3": 
+                    addCourse(i, "Physics2A");
+                    i++;
+                    break;
+                case "4": 
+                    addCourse(i, "Computer Science 12");
+                    i++;
+                    break;
+                case "5":
+                    addCourse(i, "Humanities 5"); 
+                    i++;
+                    break; 
+                case "6": 
+                    addCourse(i, "Chemistry 6A");
+                    i++;
+                    break;
+            } 
         }
+        System.out.println("Tuition Balance is : " + tuitionBalance + "\n");
     }
 
+    private void addCourse(int studentClassNum, String course) { 
+        studentsCourses[studentClassNum] = course;
+        System.out.println("Added - " + studentsCourses[studentClassNum]);
+        tuitionBalance += courseCost;
+    }
+
+    /* Still need to implement this.
     // Drop a course
     public void drop(String course){
-        while(this.courses[i] != course) {
-            
+        int i = 0;
+        while(studentsCourses[i] != course) {
         }
-    }
+    }*/
 
+    
     // View Enrolled Courses
     public void viewCourses() {
-        System.out.println(this.firstName + " " + this.lastName + "'s Courses:");
-        if(this.courses[0] == null) {
+        System.out.println(firstName + " " + lastName + "'s Courses:");
+        // if courses array is empty.
+        if(studentsCourses[0] == null) {
             System.out.println("No enrolled courses found...\n");
             return;
         }
         int i = 0;
-        while(this.courses[i] != null) {
-            System.out.println((i+1) + ") " + this.courses[i]);
+        // loop through printing each course.
+        while(studentsCourses[i] != null) {
+            System.out.println((i+1) + ") " + studentsCourses[i]);
             i++;
         }
     }
+
 
     // View balance 
     public void viewTuitionBalance(){
-        System.out.println(this.firstName + " " + this.lastName + "'s Tuition Balance : $" + this.tuitionBalance);
+        System.out.println(firstName + " " + lastName + "'s Tuition Balance : $" + tuitionBalance);
     }
+
 
     // Pay tuition
     public void payTuition(int payment) {
-        System.out.println(this.firstName + " " + this.lastName + "'s Previous Tuition Balance : $" + this.tuitionBalance);
-        this.tuitionBalance = this.tuitionBalance - payment;
-        System.out.println("Thank you for your payment of $" + payment);
-        System.out.println(this.firstName + " " + this.lastName + "'s New Tuition Balance : $" + this.tuitionBalance);
+        tuitionBalance = tuitionBalance - payment;
+        System.out.print("Thank you for your payment of $" + payment + "\n");
+        System.out.println(firstName + " " + lastName + "'s New Tuition Balance : $" + tuitionBalance);
     }
+
 
     // Show Student Account (Name, ID, year level, expected graduation, courses enrolled, and balance)
     public void viewStudentAccount(){
-        System.out.println("\nStudent Account Information: ");
-        System.out.println("Name : " + this.firstName + " " + this.lastName);
-        System.out.println("Student ID : " + this.studentID);
-        System.out.println("Year Level : " + this.yearLevel);
-        System.out.println("Expected Graduation : " + this.expectedGradYear);
-        System.out.println("Enrolled Courses : ");
+        System.out.println("\nStudent Account Information: \nName : " + firstName + " " + lastName +
+                        "\nStudent ID : " + studentID + "\nYear Level : " + yearLevel + 
+                        "\nExpected Graduation : " + expectedGradYear + "\nEnrolled Courses : ");
+        // Loop through Courses array and print each course.
         int i = 0;
-        while(this.courses[i] != null) { 
-            System.out.println((i+1) + ") " + this.courses[i]);
+        while(studentsCourses[i] != null) { 
+            System.out.println("   " + (i+1) + ") " + studentsCourses[i]);
             i++;
         }
-        System.out.println("\nTuition Balance : " + this.tuitionBalance);
+        System.out.println("\nTuition Balance : " + tuitionBalance);
     }
 }

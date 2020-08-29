@@ -7,7 +7,6 @@ public class StudentManagementApp {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         int studentCount = 0;
-        int payment = 0;
 
         // Ask how many students are enrolling.
         while(studentCount <=0){
@@ -28,11 +27,11 @@ public class StudentManagementApp {
         //Prompt user for name and year of each student
         for(int i = 0; i < studentCount; i++) { 
             System.out.println("\nAdding New Student");
-            students[i] = new Student();
+            students[i] = new Student(input);
             System.out.print("\n\n");
 
             // Enroll student in courses
-            students[i].enroll();
+            students[i].enroll(input);
             System.out.print("\n\n");
 
             // View Student's Enrolled Courses
@@ -42,16 +41,13 @@ public class StudentManagementApp {
             students[i].viewTuitionBalance();
 
             // Pay Student's Tuition Balance
-            System.out.println("Please enter how much of your tuition you wish to pay : $");
-            payment = input.nextInt();
-            students[i].payTuition(payment);
+            System.out.print("Please enter how much of your tuition you wish to pay : $");
+            //payment = input.nextInt();
+            students[i].payTuition(input.nextInt());
 
             // View Student's Account
             students[i].viewStudentAccount();
         }
-
-
-
 
         input.close();
     }
