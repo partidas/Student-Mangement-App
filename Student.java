@@ -10,15 +10,16 @@ public class Student {
     private int tuitionBalance = 0;
     private String[] studentsCourses = new String[6];
 
-    //private static int[] classSize = new int[]{30,0,0,0,0,0};
-    //private static final int classLimit = 30;
+
+    private static final String[] availableCourses = new String[]{"History 101","Math 20A","Physics 2A", "Computer Science 12","Humanities 5", "Chemistry 6A"};
+    private static int[] classSize = new int[]{0,0,0,0,0,0};
+    private static final int classLimit = 1;    
     private static final int courseCost = 100;
     private static final Calendar cal = Calendar.getInstance();
     private static int[] studentYearCount = new int[]{0,0,0,0,0};
 
     // Constructor to ask user for student name / year.
     public Student(Scanner input) {
-        //Scanner input = new Scanner(System.in);
         System.out.print("Enter Student's First Name: ");
         firstName = input.next();
 
@@ -34,10 +35,11 @@ public class Student {
             yearLevel = input.nextInt();
             break;
         }
-        
-        studentYearCount[yearLevel-1]++;
+
         expectedGradYear = 5 - yearLevel + cal.get(Calendar.YEAR);
         setStudentID();
+        studentYearCount[yearLevel-1]++;
+
     }
 
     // Generate Student 5-digit unique ID w/ first number being the year started.
@@ -48,56 +50,38 @@ public class Student {
     // Enroll in courses
     public void enroll(Scanner input) {
         int i = 0;
-        String course = input.nextLine();
+        int course;
 
-        /*  FOR FUTURE, maybe use a string list to add courses instead of switch case with a catch exception for anything 
-            other than a value.
-        */
         System.out.println("Available Courses to Enroll:\n1 - History 101\n2 - Math 20A\n3 - Physics 2A\n4 - Computer Science 12\n5 - Humanities 5\n6 - Chemistry 6A");
         while(i < studentsCourses.length) {        
-            System.out.println("Enter Y to view courses again, else type in course number, or Q to Quit.");
-            course = input.nextLine();   
+            System.out.println("Enter in course number, or 0(Zero) to Quit.");
 
-            //use switch case
-            switch(course) {
-                case "Y":         
-                    System.out.println("Available Courses to Enroll:\n1 - History 101\n2 - Math 20A\n3 - Physics 2A\n4 - Computer Science 12\n5 - Humanities 5\n6 - Chemistry 6A");
-                    break;
-                case "Q":
+            if(input.hasNextInt()){
+                course = input.nextInt(); 
+                if(course < 0 || course > 6) {
+                    System.out.println("Please input correct course number.");
+                }
+                else if(course == 0) {
                     System.out.println("Successfully Enrolled in " + (i) + " courses!");
                     i = studentsCourses.length;
                     break;
-                case "1":
-                    addCourse(i, "History 101");
+                } else if(classSize[course-1] >= classLimit) { 
+                    System.out.println(availableCourses[course-1] + " is full, please select another!");
+                } else {
+                    addCourse(i, course-1);
+                    classSize[course-1]++;
                     i++;
-                    break;
-                case "2":
-                    addCourse(i, "Math20A");
-                    i++;
-                    break;
-                case "3": 
-                    addCourse(i, "Physics2A");
-                    i++;
-                    break;
-                case "4": 
-                    addCourse(i, "Computer Science 12");
-                    i++;
-                    break;
-                case "5":
-                    addCourse(i, "Humanities 5"); 
-                    i++;
-                    break; 
-                case "6": 
-                    addCourse(i, "Chemistry 6A");
-                    i++;
-                    break;
-            } 
+                }
+            } else {
+                System.out.println("Please input correct course number.");
+                input.next();
+            }
         }
         System.out.println("Tuition Balance is : " + tuitionBalance + "\n");
     }
 
-    private void addCourse(int studentClassNum, String course) { 
-        studentsCourses[studentClassNum] = course;
+    private void addCourse(int studentClassNum, int courseNum) { 
+        studentsCourses[studentClassNum] = availableCourses[courseNum];
         System.out.println("Added - " + studentsCourses[studentClassNum]);
         tuitionBalance += courseCost;
     }
@@ -109,7 +93,6 @@ public class Student {
         while(studentsCourses[i] != course) {
         }
     }*/
-
     
     // View Enrolled Courses
     public void viewCourses() {
@@ -121,35 +104,42 @@ public class Student {
         }
         int i = 0;
         // loop through printing each course.
-        while(studentsCourses[i] != null) {
+        while(i < studentsCourses.length && studentsCourses[i] != null ) {
             System.out.println((i+1) + ") " + studentsCourses[i]);
             i++;
         }
     }
-
 
     // View balance 
     public void viewTuitionBalance(){
         System.out.println(firstName + " " + lastName + "'s Tuition Balance : $" + tuitionBalance);
     }
 
-
     // Pay tuition
-    public void payTuition(int payment) {
+    public void payTuition(Scanner input) {
+        int payment;
+        System.out.print("Please enter how much of your tuition you wish to pay : $");
+        while(!input.hasNextInt()) {
+            System.out.println("Please input a number.");
+            input.next();
+            System.out.print("Please enter how much of your tuition you wish to pay : $");
+
+        }
+        payment = input.nextInt();
         tuitionBalance = tuitionBalance - payment;
         System.out.print("Thank you for your payment of $" + payment + "\n");
         System.out.println(firstName + " " + lastName + "'s New Tuition Balance : $" + tuitionBalance);
-    }
 
+    }
 
     // Show Student Account (Name, ID, year level, expected graduation, courses enrolled, and balance)
     public void viewStudentAccount(){
         System.out.println("\nStudent Account Information: \nName : " + firstName + " " + lastName +
                         "\nStudent ID : " + studentID + "\nYear Level : " + yearLevel + 
-                        "\nExpected Graduation : " + expectedGradYear + "\nEnrolled Courses : ");
+                        "\nExpected Graduation : " + expectedGradYear + "\nEnrolled Courses : ");  
         // Loop through Courses array and print each course.
         int i = 0;
-        while(studentsCourses[i] != null) { 
+        while(i < studentsCourses.length && studentsCourses[i] != null) { 
             System.out.println("   " + (i+1) + ") " + studentsCourses[i]);
             i++;
         }

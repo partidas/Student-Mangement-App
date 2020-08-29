@@ -41,9 +41,7 @@ public class StudentManagementApp {
             students[i].viewTuitionBalance();
 
             // Pay Student's Tuition Balance
-            System.out.print("Please enter how much of your tuition you wish to pay : $");
-            //payment = input.nextInt();
-            students[i].payTuition(input.nextInt());
+            students[i].payTuition(input);
 
             // View Student's Account
             students[i].viewStudentAccount();
