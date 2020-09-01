@@ -1,4 +1,3 @@
-package studentmanagementapp;
 import java.util.*;
 
 
@@ -17,7 +16,6 @@ public class StudentManagementApp {
             else {
                 System.out.println("Please input a number.");
                 input.next();
-                continue;
             }
 
         }

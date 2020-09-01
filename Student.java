@@ -1,4 +1,3 @@
-package studentmanagementapp;
 import java.util.*;
 
 public class Student {
@@ -13,18 +12,19 @@ public class Student {
 
     private static final String[] availableCourses = new String[]{"History 101","Math 20A","Physics 2A", "Computer Science 12","Humanities 5", "Chemistry 6A"};
     private static int[] classSize = new int[]{0,0,0,0,0,0};
-    private static final int classLimit = 1;    
-    private static final int courseCost = 100;
-    private static final Calendar cal = Calendar.getInstance();
+    private static final int CLASS_LIMIT = 1;    
+    private static final int COURSE_COST = 100;
     private static int[] studentYearCount = new int[]{0,0,0,0,0};
 
     // Constructor to ask user for student name / year.
     public Student(Scanner input) {
+        Calendar cal = Calendar.getInstance();
+        input.nextLine();
         System.out.print("Enter Student's First Name: ");
-        firstName = input.next();
+        firstName = input.nextLine();
 
         System.out.print("Enter Student's Last Name: ");
-        lastName = input.next();
+        lastName = input.nextLine();
 
         System.out.print("1 - Freshman\n2 - Sophomore\n3 - Junior\n4 - Senior\n5 - Super Senior\n");
         System.out.print("Enter Student's Year Level: ");
@@ -33,7 +33,6 @@ public class Student {
         while( (0 > yearLevel) && (yearLevel > 5)) {
             System.out.print("Enter a number between 1-5:");
             yearLevel = input.nextInt();
-            break;
         }
 
         expectedGradYear = 5 - yearLevel + cal.get(Calendar.YEAR);
@@ -63,9 +62,8 @@ public class Student {
                 }
                 else if(course == 0) {
                     System.out.println("Successfully Enrolled in " + (i) + " courses!");
-                    i = studentsCourses.length;
                     break;
-                } else if(classSize[course-1] >= classLimit) { 
+                } else if(classSize[course-1] >= CLASS_LIMIT) { 
                     System.out.println(availableCourses[course-1] + " is full, please select another!");
                 } else {
                     addCourse(i, course-1);
@@ -83,7 +81,7 @@ public class Student {
     private void addCourse(int studentClassNum, int courseNum) { 
         studentsCourses[studentClassNum] = availableCourses[courseNum];
         System.out.println("Added - " + studentsCourses[studentClassNum]);
-        tuitionBalance += courseCost;
+        tuitionBalance += COURSE_COST;
     }
 
     /* Still need to implement this.
