@@ -7,7 +7,7 @@ public class Student {
     private int expectedGradYear;
     private int studentID;
     private int tuitionBalance = 0;
-    private String[] studentsCourses = new String[6];
+    private HashMap<String, Integer> studentsCourses = new HashMap<>();
 
 
     private static final String[] availableCourses = new String[]{"History 101","Math 20A","Physics 2A", "Computer Science 12","Humanities 5", "Chemistry 6A"};
@@ -28,13 +28,21 @@ public class Student {
 
         System.out.print("1 - Freshman\n2 - Sophomore\n3 - Junior\n4 - Senior\n5 - Super Senior\n");
         System.out.print("Enter Student's Year Level: ");
-        
-        yearLevel = input.nextInt();
-        while( (0 > yearLevel) && (yearLevel > 5)) {
-            System.out.print("Enter a number between 1-5:");
-            yearLevel = input.nextInt();
+        int exit = 0;
+        while(exit == 0) {
+            if(input.hasNextInt()) {
+                yearLevel = input.nextInt();
+                if(1 > yearLevel || yearLevel > 6) {
+                    System.out.print("Enter a number between 1-5:");
+                } else {
+                    exit = 1;
+                }
+            } else {
+                System.out.print("Enter a number between 1-5:");
+                input.next();
+            }
         }
-
+        
         expectedGradYear = 5 - yearLevel + cal.get(Calendar.YEAR);
         setStudentID();
         studentYearCount[yearLevel-1]++;
@@ -50,11 +58,12 @@ public class Student {
     public void enroll(Scanner input) {
         int i = 0;
         int course;
+        boolean exit = false;
 
         System.out.println("Available Courses to Enroll:\n1 - History 101\n2 - Math 20A\n3 - Physics 2A\n4 - Computer Science 12\n5 - Humanities 5\n6 - Chemistry 6A");
-        while(i < studentsCourses.length) {        
-            System.out.println("Enter in course number, or 0(Zero) to Quit.");
 
+        while(!exit) {     
+            System.out.println("Enter in course number, or 0(Zero) to Quit.");   
             if(input.hasNextInt()){
                 course = input.nextInt(); 
                 if(course < 0 || course > 6) {
@@ -62,11 +71,11 @@ public class Student {
                 }
                 else if(course == 0) {
                     System.out.println("Successfully Enrolled in " + (i) + " courses!");
-                    break;
+                    exit = true;
                 } else if(classSize[course-1] >= CLASS_LIMIT) { 
                     System.out.println(availableCourses[course-1] + " is full, please select another!");
                 } else {
-                    addCourse(i, course-1);
+                    addCourse(course-1);
                     classSize[course-1]++;
                     i++;
                 }
@@ -75,37 +84,42 @@ public class Student {
                 input.next();
             }
         }
-        System.out.println("Tuition Balance is : " + tuitionBalance + "\n");
+        System.out.println("Tuition Balance is : $" + tuitionBalance + "\n");
     }
 
-    private void addCourse(int studentClassNum, int courseNum) { 
-        studentsCourses[studentClassNum] = availableCourses[courseNum];
-        System.out.println("Added - " + studentsCourses[studentClassNum]);
+    private void addCourse(int courseNum) { 
+        studentsCourses.put(availableCourses[courseNum], courseNum);
+        System.out.println("Added - " + availableCourses[courseNum]);
         tuitionBalance += COURSE_COST;
     }
 
-    /* Still need to implement this.
     // Drop a course
     public void drop(String course){
         int i = 0;
-        while(studentsCourses[i] != course) {
+        while(i < studentsCourses.size() && !studentsCourses.isEmpty()) {
+            if(studentsCourses.get(course) != null) {
+                classSize[studentsCourses.get(course)]--;
+                studentsCourses.remove(course);
+            }
+            i++;
         }
-    }*/
+    }
     
-    // View Enrolled Courses
+    // View Students' Enrolled Courses
     public void viewCourses() {
         System.out.println(firstName + " " + lastName + "'s Courses:");
-        // if courses array is empty.
-        if(studentsCourses[0] == null) {
+        // if courses hashMap is empty.
+        if(studentsCourses.isEmpty()) {
             System.out.println("No enrolled courses found...\n");
             return;
         }
         int i = 0;
-        // loop through printing each course.
-        while(i < studentsCourses.length && studentsCourses[i] != null ) {
-            System.out.println((i+1) + ") " + studentsCourses[i]);
+        // loop through courses hashmap printing each course.
+        for(String course : studentsCourses.keySet()) {
+            System.out.println((i+1) + ") " + course);
             i++;
         }
+
     }
 
     // View balance 
@@ -115,6 +129,9 @@ public class Student {
 
     // Pay tuition
     public void payTuition(Scanner input) {
+        if(tuitionBalance == 0) {
+            return;
+        }
         int payment;
         System.out.print("Please enter how much of your tuition you wish to pay : $");
         while(!input.hasNextInt()) {
@@ -135,12 +152,8 @@ public class Student {
         System.out.println("\nStudent Account Information: \nName : " + firstName + " " + lastName +
                         "\nStudent ID : " + studentID + "\nYear Level : " + yearLevel + 
                         "\nExpected Graduation : " + expectedGradYear + "\nEnrolled Courses : ");  
-        // Loop through Courses array and print each course.
-        int i = 0;
-        while(i < studentsCourses.length && studentsCourses[i] != null) { 
-            System.out.println("   " + (i+1) + ") " + studentsCourses[i]);
-            i++;
-        }
-        System.out.println("\nTuition Balance : " + tuitionBalance);
+        // Loop through studentCourses HashMap and print each course.
+        viewCourses();
+        System.out.println("\nTuition Balance : $" + tuitionBalance);
     }
 }

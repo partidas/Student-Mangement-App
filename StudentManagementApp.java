@@ -31,7 +31,7 @@ public class StudentManagementApp {
             // Enroll student in courses
             students[i].enroll(input);
             System.out.print("\n\n");
-
+    
             // View Student's Enrolled Courses
             students[i].viewCourses();
 
