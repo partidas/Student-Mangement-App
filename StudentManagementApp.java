@@ -41,9 +41,14 @@ public class StudentManagementApp {
             // Pay Student's Tuition Balance
             students[i].payTuition(input);
 
+            // Option to drop a course
+            //tudents[i].drop(input);
+
             // View Student's Account
             students[i].viewStudentAccount();
         }
+        // Check class Sizes
+        Student.checkClassSize();
 
         input.close();
     }

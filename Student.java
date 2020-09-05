@@ -76,7 +76,7 @@ public class Student {
                     System.out.println(availableCourses[course-1] + " is full, please select another!");
                 } else {
                     addCourse(course-1);
-                    classSize[course-1]++;
+                    updateClassNum(course-1,true);
                     i++;
                 }
             } else {
@@ -87,6 +87,23 @@ public class Student {
         System.out.println("Tuition Balance is : $" + tuitionBalance + "\n");
     }
 
+    //setter method to increase / decrease a classes student count.
+    public static void updateClassNum (int courseId, boolean inc) {
+        if(inc) {
+            classSize[courseId]++;
+        } else {
+            classSize[courseId]--;
+        }
+    }
+
+    //getter method to see classSize
+    public static void checkClassSize(){
+        System.out.println("Current Class Sizes are: ");
+        for(int i = 0; i < classSize.length; i++) {
+            System.out.println(availableCourses[i] + " : " + classSize[i] + "/" + CLASS_LIMIT);
+        }
+    }
+
     private void addCourse(int courseNum) { 
         studentsCourses.put(availableCourses[courseNum], courseNum);
         System.out.println("Added - " + availableCourses[courseNum]);
@@ -94,24 +111,25 @@ public class Student {
     }
 
     // Drop a course
-    public void drop(String course){
+    /*public void drop(Scanner input){
+        System.out.println("Enter Course to Drop.");
         int i = 0;
         while(i < studentsCourses.size() && !studentsCourses.isEmpty()) {
             if(studentsCourses.get(course) != null) {
-                classSize[studentsCourses.get(course)]--;
+                updateClassNum(studentsCourses.get(course),false);
                 studentsCourses.remove(course);
             }
             i++;
         }
-    }
+    }*/
     
     // View Students' Enrolled Courses
     public void viewCourses() {
         System.out.println(firstName + " " + lastName + "'s Courses:");
         // if courses hashMap is empty.
         if(studentsCourses.isEmpty()) {
-            System.out.println("No enrolled courses found...\n");
-            return;
+            System.out.println("No enrolled courses.\n");
+            //return;
         }
         int i = 0;
         // loop through courses hashmap printing each course.
